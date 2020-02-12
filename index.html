@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" ref="text/css" href="index.css" />
+</head>
+
+<body>
+    <canvas id="leavesCanvas" width="500" height="300"></canvas>
+    <canvas id="treeCanvas"></canvas>
+
+    <form id="userInput">
+        <div class="container">
+            <h1 class="header">Ghibli Generator!</h1>
+            <p class="text">Click this button to get started:</p>
+            <button id="submit">Go On an Adventure</button>
+        </div>
+    </form>
+    <section></section>
+    <!--For Blossoms-->
+    <script>
+        (function () {
+
+            var leavesStage, branchStage;
+            var leafColorDark = "#FFB7C5";
+            var leafColorLight = "#FFC5D0"
+            var pistileColor = "#6F0011";
+            var numOfLeaves = 400;	/*Amount of falling leaves*/
+
+            function init() {
+                initStages();
+                initLeaves();	/*the falling leaves*/
+                createjs.Ticker.setFPS(40);
+            }
+
+            function initStages() {
+                leavesStage = new createjs.Stage("leavesCanvas");
+                leavesStage.canvas.width = window.innerWidth;
+                leavesStage.canvas.height = window.innerHeight - 10;
+            }
+
+            function initFlowers() {
+                for (var j = 0; j < numOfFlowers; j++) {
+                    var flower = new createjs.Container();
+
+                    for (var i = 0; i < 5; i++) {
+                        var petalW = randomInt(14, 16);
+                        var petalH = randomInt(14, 16);
+                        var petal = new createjs.Shape();
+
+                        petal.regX = 0;
+                        petal.regY = petalH;
+                        petal.rotation = 72 * i;
+                        petal.graphics.beginLinearGradientFill([leafColorDark, leafColorLight], [0.5, 0.5], 0, 0, petalW, petalH).drawRoundRectComplex(0, 0, petalW, petalH, 12, 1, 12, 1);
+                        petal.cache(0, 0, 16, 16);
+                        flower.addChild(petal);
+                    }
+                    var pistile = new createjs.Shape();
+                    var pistileH = randomInt(6, 8);
+                    var pistileW = randomInt(6, 8);
+                    var xPos = Math.random() * 1000 + 100 | 0;
+                    var yPos = Math.random() * 300 + 200 | 0;
+
+                    pistile.graphics.beginFill(pistileColor).drawEllipse(-pistileW / 2, -pistileH / 2, pistileW, pistileH);
+                    flower.addChild(pistile);
+                    flower.cache(-25, -25, 50, 50);
+                    flower.x = xPos;
+                    flower.y = yPos;
+                    branchStage.addChild(flower);
+
+                }
+                createjs.Ticker.addEventListener("tick", branchStage);
+            }
+
+            function initLeaves() {
+                for (var i = 0; i < numOfLeaves; i++) {
+                    var leaf = new createjs.Shape();
+                    var x = (2 * window.innerWidth) * Math.random() + 300;
+                    var y = -((Math.random() * 20) + 15);
+                    var randomRotation = Math.random() * 360;
+                    var max = 16;
+                    var min = 12;
+                    var falltime = Math.round(window.innerHeight * 7) + Math.random() * 5000;
+
+                    leaf.graphics.beginFill(leafColorDark).drawRoundRectComplex(0, 0, randomInt(min, max), randomInt(min, max), 12, 1, 12, 1);
+                    leaf.x = x;
+                    leaf.y = y;
+                    leavesStage.addChild(leaf);
+                    createjs.Tween.get(leaf, { loop: true })
+                        .wait(Math.random() * 10000)
+                        .to({ x: -window.innerWidth, y: 2 * window.innerHeight, rotation: Math.random() * 360 + 60 }, (Math.round(window.innerHeight * 11) + Math.random() * 5000));
+                }
+                createjs.Ticker.addEventListener("tick", leavesStage);
+            }
+
+            function randomInt(a, b) {
+                return Math.floor(Math.random() * (b - a + 1) + a);
+            }
+
+            window.onload = function () { init() };
+        })();
+    </script>
+    <!--End Blossoms-->
+    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+    <script src="https://code.createjs.com/tweenjs-0.6.2.min.js"></script>
+    <script src="index.js">
+    </script>
+</body>
+
+</html>
